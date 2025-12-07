@@ -88,7 +88,26 @@ export const getMatchesByLeague: RequestHandler = async (req, res) => {
   try {
     const { leagueId } = req.params;
     const { round, group, status } = req.query;
+    const userId = req.userId;
+    const accessToken = req.query.token as string;
+    const league = await League.findById(leagueId);
+    if (!league) {
+      return res.status(404).json({
+        message: "Giải đấu không tồn tại!",
+      });
+    }
 
+    if (league.visibility === "private") {
+      const isOwner = userId && league.owner.toString() === userId.toString();
+      const hasValidToken = accessToken === league.accessToken;
+
+      if (!isOwner && !hasValidToken) {
+        return res.status(403).json({
+          message: "Giải đấu này ở chế độ riêng tư. Bạn cần có mã truy cập!",
+        });
+      }
+    }
+    
     const query: any = { league: leagueId };
     if (round) query.round = parseInt(round as string);
     if (group) query.group = (group as string).toUpperCase();
@@ -117,7 +136,8 @@ export const getMatchesByLeague: RequestHandler = async (req, res) => {
 export const getMatchDetail: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
-
+    const userId = req.userId;
+    const accessToken = req.query.token as string;
     const match = await Match.findById(id)
       .populate("homeTeam", "name shortName logo stats form")
       .populate("awayTeam", "name shortName logo stats form")
@@ -128,7 +148,18 @@ export const getMatchDetail: RequestHandler = async (req, res) => {
         message: "Trận đấu không tồn tại!",
       });
     }
+    const league = match.league as any;
 
+    if (league.visibility === "private") {
+      const isOwner = userId && league.owner.toString() === userId.toString();
+      const hasValidToken = accessToken === league.accessToken;
+
+      if (!isOwner && !hasValidToken) {
+        return res.status(403).json({
+          message: "Giải đấu này ở chế độ riêng tư. Bạn cần có mã truy cập!",
+        });
+      }
+    }
     res.status(200).json({
       message: "Chi tiết trận đấu",
       match: match,

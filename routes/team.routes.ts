@@ -17,9 +17,9 @@ router.post(
   controller.createTeam
 );
 
-router.get("/league/:leagueId", controller.getTeamsByLeague);
+router.get("/league/:leagueId",authMiddleware.optionalAuth, controller.getTeamsByLeague);
 
-router.get("/:id", controller.getTeamDetail);
+router.get("/:id",authMiddleware.optionalAuth, controller.getTeamDetail);
 
 router.patch(
   "/:id",

@@ -98,6 +98,25 @@ export const getTeamsByLeague: RequestHandler = async (req, res) => {
   try {
     const { leagueId } = req.params;
     const { group } = req.query;
+    const userId = req.userId;
+    const accessToken = req.query.token as string;
+    const league = await League.findById(leagueId);
+    if (!league) {
+      return res.status(404).json({
+        message: "Giải đấu không tồn tại!",
+      });
+    }
+
+    if (league.visibility === "private") {
+      const isOwner = userId && league.owner.toString() === userId.toString();
+      const hasValidToken = accessToken === league.accessToken;
+      console.log(isOwner, hasValidToken)
+      if (!isOwner && !hasValidToken) {
+        return res.status(403).json({
+          message: "Giải đấu này ở chế độ riêng tư. Bạn cần có mã truy cập!",
+        });
+      }
+    }
     const query: any = { league: leagueId };
     if (group) {
       query.group = (group as string).toUpperCase();
@@ -124,14 +143,27 @@ export const getTeamsByLeague: RequestHandler = async (req, res) => {
 export const getTeamDetail: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
+    const userId = req.userId;
+    const accessToken = req.query.token as string;
 
     const team = await Team.findById(id)
-      .populate("league", "name type visibility");
+      .populate("league", "name type visibility owner accessToken");
 
     if (!team) {
       return res.status(404).json({
         message: "Đội không tồn tại!",
       });
+    }
+    const league = team.league as any;
+    if (league.visibility === "private") {
+      const isOwner = userId && league.owner.toString() === userId.toString();
+      const hasValidToken = accessToken === league.accessToken;
+
+      if (!isOwner && !hasValidToken) {
+        return res.status(403).json({
+          message: "Giải đấu này ở chế độ riêng tư. Bạn cần có mã truy cập!",
+        });
+      }
     }
 
     res.status(200).json({

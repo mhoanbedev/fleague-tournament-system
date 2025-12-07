@@ -25,8 +25,8 @@ router.patch(
   controller.resetAllResults
 );
  
-router.get("/league/:leagueId", controller.getMatchesByLeague);
-router.get("/:id", controller.getMatchDetail);
+router.get("/league/:leagueId",authMiddleware.optionalAuth, controller.getMatchesByLeague);
+router.get("/:id",authMiddleware.optionalAuth, controller.getMatchDetail);
  
 router.patch(
   "/:id/result",
