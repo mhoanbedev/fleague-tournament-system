@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",                       // Code modern
+    "module": "commonjs",                     // Node.js module system
+    "rootDir": "./",                          // Nơi đặt code TS
+    "outDir": "dist",                         // Nơi output JS sau khi build
+    "removeComments": true,                   
+    "esModuleInterop": true, 
+    "allowSyntheticDefaultImports": true,                 // Cho phép import default từ commonjs
+    "resolveJsonModule": true,                // Cho phép import file .json
+    "skipLibCheck": true,                     
+    "strict": true,                           // Strict type checking
+    "forceConsistentCasingInFileNames": true, // Tránh lỗi sai tên file (Windows vs Linux)
+    "typeRoots": ["./types", "./node_modules/@types"], // Dùng cho augment Express
+    "moduleResolution": "node",               // Resolve module giống Node.js
+    "sourceMap": true                         // Debug với source map
+  },
+  "include": ["**/*.ts", "types"],            // Build tất cả file TS và type augment
+  "exclude": ["node_modules", "dist"]          // Loại bỏ thư mục không cần build
+}
