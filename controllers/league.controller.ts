@@ -151,7 +151,7 @@ export const getLeagueDetail: RequestHandler = async (req, res) => {
 export const updateLeague: RequestHandler = async (req, res) => {
   try {
     const league = (req as any).league; 
-    const { name, description, logo, startDate, endDate } = req.body;
+    const { name, description,visibility,logo, startDate, endDate } = req.body;
 
     if (!canUpdateLeague(league.tournamentStatus, startDate)) {
       return res.status(400).json({
@@ -179,7 +179,14 @@ export const updateLeague: RequestHandler = async (req, res) => {
     if (logo) league.logo = logo;
     if (startDate) league.startDate = startDate;
     if (endDate) league.endDate = endDate;
- 
+    if (visibility) {
+      league.visibility = visibility;
+      if(visibility === "private" && !league.accessToken){
+        league.accessToken = generateToken();
+      }else if(visibility === "public"){
+        league.accessToken = null;
+      }
+    };
     if ((req as any).hasDateUpdate || startDate || endDate) {
       const newStatus = determineLeagueStatus(
         startDate || league.startDate,
