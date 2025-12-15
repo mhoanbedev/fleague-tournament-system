@@ -63,7 +63,19 @@ export const formatStandings = (teams: Team[]): StandingRow[] => {
     form: team.form,
   }));
 };
-
+export const formatStandingRows = (teams: Team[]): StandingRow[] => {
+  return teams.map((team, index) => ({
+    position: index + 1,
+    team: {
+      _id: team._id.toString(),
+      name: team.name,
+      shortName: team.shortName,
+      logo: team.logo,
+    },
+    stats: team.stats,
+    form: team.form,
+  }));
+};
 
 export const getTopScorers = (teams: Team[], limit: number = 5): StandingRow[] => {
   const sortedByGoals = [...teams].sort((a, b) => {
@@ -73,7 +85,7 @@ export const getTopScorers = (teams: Team[], limit: number = 5): StandingRow[] =
     return b.stats.goalDifference - a.stats.goalDifference;
   });
 
-  return formatStandings(sortedByGoals).slice(0, limit);
+  return formatStandingRows(sortedByGoals.slice(0, limit));
 };
 
 export const getBestDefense = (teams: Team[], limit: number = 5): StandingRow[] => {
@@ -84,8 +96,7 @@ export const getBestDefense = (teams: Team[], limit: number = 5): StandingRow[] 
     return b.stats.points - a.stats.points;
   });
 
-  const topDefenseTeams = sortedByDefense.slice(0, limit);
-  return formatStandings(topDefenseTeams);
+  return formatStandingRows(sortedByDefense.slice(0, limit));
 };
 
 
