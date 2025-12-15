@@ -5,6 +5,7 @@ import * as leagueAuth from "../middleware/league.auth.middleware"
 import * as validate from "../middleware/league.validate.middleware"
 import { upload } from "../middleware/multer.middleware";
 import { uploadSingle } from "../helpers/uploadCloud";
+import { autoUpdateAllLeaguesStatus, autoUpdateLeagueStatus } from "../middleware/autoUpdateStatus.middleware";
 
 const router: Router = Router();
 
@@ -20,11 +21,13 @@ router.post(
 router.get(
     "/my-leagues",
     authMiddleware.authMiddleware,
+    autoUpdateAllLeaguesStatus,
     controller.getMyLeagues
 )
 
 router.get(
     "/public", 
+    autoUpdateAllLeaguesStatus,
     controller.getPublicLeagues
 )
 
@@ -32,6 +35,7 @@ router.get(
     "/:id",
     authMiddleware.optionalAuth,
     leagueAuth.canAccessLeague,
+    autoUpdateLeagueStatus,
     controller.getLeagueDetail
 )
 
