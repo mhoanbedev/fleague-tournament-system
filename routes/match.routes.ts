@@ -4,12 +4,14 @@ import * as authMiddleware from "../middleware/auth.middleware";
 import * as validate from "../middleware/match.validate.middleware";
 import { upload, uploadVideo } from "../middleware/multer.middleware";
 import { uploadFields, uploadMultipleVideos } from "../helpers/uploadCloud";
+import { autoUpdateLeagueStatus } from "../middleware/autoUpdateStatus.middleware";
 
 const router: Router = Router();
  
 router.post(
   "/generate-schedule/:leagueId",
   authMiddleware.authMiddleware,
+  autoUpdateLeagueStatus,
   controller.generateSchedule
 );
  
@@ -25,12 +27,13 @@ router.patch(
   controller.resetAllResults
 );
  
-router.get("/league/:leagueId",authMiddleware.optionalAuth, controller.getMatchesByLeague);
+router.get("/league/:leagueId",authMiddleware.optionalAuth,autoUpdateLeagueStatus, controller.getMatchesByLeague);
 router.get("/:id",authMiddleware.optionalAuth, controller.getMatchDetail);
  
 router.patch(
   "/:id/result",
   authMiddleware.authMiddleware,
+  autoUpdateLeagueStatus,
   validate.validateUpdateResult,
   controller.updateMatchResult
 );
