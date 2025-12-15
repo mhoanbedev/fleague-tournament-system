@@ -53,30 +53,31 @@ export const autoUpdateLeagueStatus: RequestHandler = async (req, res, next) => 
     next();
   }
 };
-
-export const autoUpdateAllLeaguesStatus = async (): Promise<void> => {
+export const autoUpdateAllLeaguesStatus: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
   try {
     const leagues = await League.find({
       $or: [{ startDate: { $ne: null } }, { endDate: { $ne: null } }],
     });
 
-    let updatedCount = 0;
-
     for (const league of leagues) {
-      const currentStatus = league.tournamentStatus;
-      const newStatus = determineLeagueStatus(league.startDate, league.endDate);
+      const newStatus = determineLeagueStatus(
+        league.startDate,
+        league.endDate
+      );
 
-      if (currentStatus !== newStatus) {
+      if (league.tournamentStatus !== newStatus) {
         league.tournamentStatus = newStatus;
         await league.save();
-        updatedCount++;
       }
     }
 
-    if (updatedCount > 0) {
-      console.log(`Đã tự động cập nhật trạng thái cho ${updatedCount} giải đấu.`);
-    }
+    next(); 
   } catch (error) {
-    console.error("Lỗi khi tự động cập nhật trạng thái tất cả giải đấu:", error);
+    console.error("Lỗi auto update leagues:", error);
+    next();
   }
 };

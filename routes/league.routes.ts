@@ -26,8 +26,7 @@ router.get(
 )
 
 router.get(
-    "/public", 
-    autoUpdateAllLeaguesStatus,
+    "/public",
     controller.getPublicLeagues
 )
 
