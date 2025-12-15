@@ -84,7 +84,8 @@ export const getBestDefense = (teams: Team[], limit: number = 5): StandingRow[] 
     return b.stats.points - a.stats.points;
   });
 
-  return formatStandings(sortedByDefense).slice(0, limit);
+  const topDefenseTeams = sortedByDefense.slice(0, limit);
+  return formatStandings(topDefenseTeams);
 };
 
 
