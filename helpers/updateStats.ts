@@ -37,19 +37,19 @@ export const revertTeamStats = (
   goalsAgainst: number,
   result: "win" | "draw" | "lose"
 ): void => {
-  team.stats.played -= 1;
-  team.stats.goalsFor -= goalsFor;
-  team.stats.goalsAgainst -= goalsAgainst;
+  team.stats.played = Math.max(0, team.stats.played - 1);
+  team.stats.goalsFor = Math.max(0, team.stats.goalsFor - goalsFor);
+  team.stats.goalsAgainst = Math.max(0, team.stats.goalsAgainst - goalsAgainst);
   team.stats.goalDifference = team.stats.goalsFor - team.stats.goalsAgainst;
 
   if (result === "win") {
-    team.stats.won -= 1;
-    team.stats.points -= 3;
+    team.stats.won = Math.max(0, team.stats.won - 1);
+    team.stats.points = Math.max(0, team.stats.points - 3);
   } else if (result === "draw") {
-    team.stats.drawn -= 1;
-    team.stats.points -= 1;
+    team.stats.drawn = Math.max(0, team.stats.drawn - 1);
+    team.stats.points = Math.max(0, team.stats.points - 1);
   } else if (result === "lose") {
-    team.stats.lost -= 1;
+    team.stats.lost = Math.max(0, team.stats.lost - 1);
   }
 
   if (team.form.length > 0) {
