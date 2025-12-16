@@ -9,6 +9,7 @@ import {
 } from "../helpers/scheduleGenerator";
 import { processMatchResult } from "../helpers/updateStats";
 import { resetTeamStats, resetAllTeamsStats } from "../helpers/resetStats";
+import mongoose from "mongoose";
 
 // [POST] /match/generate-schedule/:leagueId
 export const generateSchedule: RequestHandler = async (req, res) => {
