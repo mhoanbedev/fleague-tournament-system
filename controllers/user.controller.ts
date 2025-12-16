@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import bcrypt from "bcryptjs";
 import User from "../models/user.model";
+import { sendMail } from "../helpers/mail.helper";
 // [GET] /api/v1/user/profile
 export const profile: RequestHandler = async (req, res) => {
   try {
@@ -90,6 +91,15 @@ export const changePassword: RequestHandler = async (req, res) => {
     user.password = hashedPassword;
     user.refreshToken = null;
     await user.save();
+    sendMail(
+      user.email,
+      "Thông báo thay đổi mật khẩu",
+      `<h2>Xin chào ${user.username},</h2>
+      <p>Mật khẩu tài khoản của bạn đã được thay đổi thành công. Nếu bạn không thực hiện thay đổi này, vui lòng liên hệ với bộ phận hỗ trợ ngay lập tức.</p>
+      <p>Thời gian: ${new Date().toLocaleString()}</p>
+      <p>Trân trọng,</p>
+      <p>Đội ngũ Admin FLeague</p>`
+    )
     res.status(200).json({
         message: "Đổi mật khẩu thành công!",
     });
