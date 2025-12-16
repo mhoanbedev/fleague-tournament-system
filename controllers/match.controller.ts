@@ -136,6 +136,9 @@ export const getMatchesByLeague: RequestHandler = async (req, res) => {
 export const getMatchDetail: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "ID trận đấu không hợp lệ!" });
+    }
     const userId = req.userId;
     const accessToken = req.query.token as string;
     const match = await Match.findById(id)
@@ -151,7 +154,7 @@ export const getMatchDetail: RequestHandler = async (req, res) => {
     const league = match.league as any;
 
     if (league.visibility === "private") {
-      const isOwner = userId && league.owner.toString() === userId.toString();
+      const isOwner = userId && league.owner && league.owner.toString() === userId.toString();
       const hasValidToken = accessToken === league.accessToken;
 
       if (!isOwner && !hasValidToken) {
