@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 
 export const validateUpdateProfile: RequestHandler = (req, res, next) => {
-  const { username } = req.body;
+  const { username, address, phone } = req.body;
   const errors: string[] = [];
 
   if (username) {
@@ -13,6 +13,38 @@ export const validateUpdateProfile: RequestHandler = (req, res, next) => {
     }
     if (!/^[\p{L}0-9_ ]+$/u.test(username.trim())) {
       errors.push("Username chỉ được chứa chữ cái (có dấu), số, dấu gạch dưới và khoảng trắng");
+    }
+  }
+
+  if (address !== undefined) {
+    if (typeof address !== "string") {
+      errors.push("Địa chỉ không hợp lệ");
+    } else{
+      const trimmedAddress = address.trim();
+
+      if(trimmedAddress.length === 0){
+        errors.push("Địa chỉ không được để trống");
+      }
+
+      if(trimmedAddress.length > 255){
+        errors.push("Địa chỉ tối đa 255 ký tự");
+      }
+    }
+  }
+
+  if (phone !== undefined) {
+    if (typeof phone !== "string") {
+      errors.push("Số điện thoại phai là chuỗi ký tự");
+    } else {
+      const trimmedPhone = phone.trim();
+
+      if(trimmedPhone.length === 0){
+        errors.push("Số điện thoại không được để trống");
+      }
+
+      if(!/^(0|\+84)[0-9]{9}$/.test(trimmedPhone)){
+        errors.push("Số điện thoại không hợp lệ (VD: 0912345678 hoặc +84912345678)");
+      }
     }
   }
 

@@ -12,6 +12,8 @@ export interface User extends Document {
   createdLeagues: mongoose.Types.ObjectId[];
   createdAt: Date;
   updatedAt: Date;
+  address?: string;
+  phone?: string;
 }
 
 const UserSchema = new Schema<User>(
@@ -62,6 +64,23 @@ const UserSchema = new Schema<User>(
         ref: "League",
       },
     ],
+    address: {
+      type: String,
+      trim: true,
+      maxLength: [255, "Địa chỉ tối đa 255 ký tự"],
+      default: null,
+    },
+
+    phone: {
+      type: String,
+      trim: true,
+      match: [
+        /^(0|\+84)[0-9]{9}$/,
+        "Số điện thoại không hợp lệ (VD: 0912345678 hoặc +84912345678)",
+      ],
+      default: null
+    },
+
   },
   {
     timestamps: true,

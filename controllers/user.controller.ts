@@ -20,7 +20,7 @@ export const profile: RequestHandler = async (req, res) => {
 // [PATCH] /api/v1/user/update-profile
 export const updateProfile: RequestHandler = async (req, res) => {
   try {
-    const { username, avatar} = req.body;
+    const { username, avatar, address, phone } = req.body;
     const userId = req.userId;
     if (!userId) {
         return res.status(401).json({
@@ -34,18 +34,28 @@ export const updateProfile: RequestHandler = async (req, res) => {
         });
     }   
 
-    if (username && username !== user.username){
-        const existingUser = await User.findOne({ username: username });
+    if (username && username.trim() !== user.username){
+        const existingUser = await User.findOne({
+          username: username.trim(),
+          _id: { $ne: userId },
+        });
         if (existingUser) {
             return res.status(400).json({
                 message: "Username đã được sử dụng!",
             });
         }
-        user.username = username;
+        user.username = username.trim();
     }
 
     if (avatar) {
         user.avatar = avatar;
+    }
+    if (address !== undefined) {
+      user.address = address?.trim() || null;
+    }
+    
+    if (phone !== undefined) {
+      user.phone = phone?.trim() || null;
     }
 
     await user.save();
