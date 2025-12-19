@@ -104,11 +104,78 @@ export const changePassword: RequestHandler = async (req, res) => {
     sendMail(
       user.email,
       "Thông báo thay đổi mật khẩu",
-      `<h2>Xin chào ${user.username},</h2>
-      <p>Mật khẩu tài khoản của bạn đã được thay đổi thành công. Nếu bạn không thực hiện thay đổi này, vui lòng liên hệ với bộ phận hỗ trợ ngay lập tức.</p>
-      <p>Thời gian: ${new Date().toLocaleString()}</p>
-      <p>Trân trọng,</p>
-      <p>Đội ngũ Admin FLeague</p>`
+      `<div style="
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #f4f6f8;
+      padding: 30px;
+  ">
+      <div style="
+          max-width: 520px;
+          margin: auto;
+          background-color: #ffffff;
+          border-radius: 10px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+          overflow: hidden;
+      ">
+          <!-- Header -->
+          <div style="
+              background-color: #ff9800;
+              color: #ffffff;
+              padding: 20px;
+              text-align: center;
+          ">
+              <img 
+                src="https://res.cloudinary.com/dlooaxncv/image/upload/v1766126318/851fa114-cace-44e7-85b1-b6492d3d167e_yp86ic.jpg"
+                alt="Phui League"
+                style="max-height:70px; display:block; margin:0 auto 8px;"
+              />
+              <p style="margin: 0;">Thông báo thay đổi mật khẩu</p>
+          </div>
+
+          <!-- Body -->
+          <div style="padding: 25px; color: #333333;">
+              <p>Xin chào <strong>${user.username}</strong>,</p>
+
+              <p>
+                  Mật khẩu tài khoản của bạn đã được
+                  <strong>thay đổi thành công</strong>.
+              </p>
+
+              <div style="
+                  background-color: #fff8e1;
+                  border-left: 4px solid #ff9800;
+                  padding: 15px;
+                  margin: 20px 0;
+                  font-size: 14px;
+              ">
+                  ⚠️ Nếu bạn <strong>không thực hiện</strong> thay đổi này,
+                  vui lòng liên hệ với bộ phận hỗ trợ <strong>ngay lập tức</strong>
+                  để đảm bảo an toàn cho tài khoản.
+              </div>
+
+              <p style="font-size: 14px; color: #555555;">
+                  ⏰ Thời gian thay đổi:
+                  <strong>${new Date().toLocaleString("vi-VN")}</strong>
+              </p>
+
+              <p style="margin-top: 30px;">
+                  Trân trọng,<br/>
+                  <strong>Đội ngũ Admin FLeague.</strong>
+              </p>
+          </div>
+
+          <!-- Footer -->
+          <div style="
+              background-color: #f4f6f8;
+              padding: 15px;
+              text-align: center;
+              font-size: 12px;
+              color: #888888;
+          ">
+              © ${new Date().getFullYear()} Phui League. All rights reserved.
+          </div>
+      </div>
+  </div>`
     )
     res.status(200).json({
         message: "Đổi mật khẩu thành công!",

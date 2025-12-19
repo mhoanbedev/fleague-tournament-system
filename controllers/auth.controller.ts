@@ -196,10 +196,85 @@ export const forgotPassword: RequestHandler = async (req, res) => {
 
     const subject = "Mã OTP xác minh đặt lại mật khẩu";
     const html = `
-    <h2>Xin chào ${user.username},</h2>
-    <p>Bạn đã yêu cầu đặt lại mật khẩu cho tài khoản của mình. Vui lòng sử dụng mã OTP bên dưới để xác minh yêu cầu của bạn:</p>
-    <h3 style="color: blue;">${otp}</h3>
-    <p>Mã OTP này sẽ hết hạn trong 3 phút. Vui lòng không chia sẻ mã này với bất kỳ ai để bảo vệ tài khoản của bạn.</p>
+    <div style="
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f6f8;
+    padding: 30px;
+">
+    <div style="
+        max-width: 520px;
+        margin: auto;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        overflow: hidden;
+    ">
+        <!-- Header -->
+        <div style="
+            background-color: #1e90ff;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        ">
+            <h1 style="margin: 0;">Phui League</h1>
+            <p style="margin: 5px 0 0;">Xác minh đặt lại mật khẩu</p>
+        </div>
+
+        <!-- Body -->
+        <div style="padding: 25px; color: #333333;">
+            <p>Xin chào <strong>${user.username}</strong>,</p>
+
+            <p>
+                Chúng tôi nhận được yêu cầu <strong>đặt lại mật khẩu</strong> cho tài khoản của bạn.
+                Vui lòng sử dụng mã OTP bên dưới để xác minh:
+            </p>
+
+            <div style="
+                text-align: center;
+                margin: 30px 0;
+            ">
+                <span style="
+                    display: inline-block;
+                    font-size: 28px;
+                    letter-spacing: 6px;
+                    font-weight: bold;
+                    color: #1e90ff;
+                    background-color: #f0f7ff;
+                    padding: 12px 24px;
+                    border-radius: 8px;
+                ">
+                    ${otp}
+                </span>
+            </div>
+
+            <p style="font-size: 14px; color: #555555;">
+                Mã OTP này sẽ <strong>hết hạn sau 3 phút</strong>.
+                Vui lòng không chia sẻ mã này với bất kỳ ai để bảo vệ tài khoản của bạn.
+            </p>
+
+            <p style="font-size: 14px; color: #555555;">
+                Nếu bạn <strong>không yêu cầu</strong> đặt lại mật khẩu,
+                vui lòng bỏ qua email này.
+            </p>
+
+            <p style="margin-top: 30px;">
+                Trân trọng,<br/>
+                <strong>Đội ngũ Admin FLeague.</strong>
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div style="
+            background-color: #f4f6f8;
+            padding: 15px;
+            text-align: center;
+            font-size: 12px;
+            color: #888888;
+        ">
+            © ${new Date().getFullYear()} Phui League. All rights reserved.
+        </div>
+    </div>
+</div>
     `
     sendMail(email, subject, html);
     return res.status(200).json({
@@ -288,15 +363,91 @@ export const resetPassword: RequestHandler = async (req, res) => {
 
     const subject = "Đặt lại mật khẩu thành công";
     const html = `
-    <h2>Xin chào ${user.username},</h2>
-    <p>Mật khẩu tài khoản <b>${user.email}</b> đã được đặt lại thành công.</p>
-    <p>Nếu bạn <b>không thực hiện</b> thao tác này, vui lòng:</p>
-    <ul>
-      <li>Liên hệ ngay bộ phận hỗ trợ</li>
-      <li>Đổi lại mật khẩu càng sớm càng tốt</li>
-    </ul>
-    <p>Thời gian: ${new Date().toLocaleString()}</p>
-    <p>Trân trọng,<br/>Đội ngũ Admin FLeague.</p>
+    <div style="
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f6f8;
+    padding: 30px;
+">
+    <div style="
+        max-width: 520px;
+        margin: auto;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        overflow: hidden;
+    ">
+        <!-- Header -->
+        <div style="
+    background-color: #28a745;
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+">
+    <img 
+      src="https://res.cloudinary.com/dlooaxncv/image/upload/v1766126318/851fa114-cace-44e7-85b1-b6492d3d167e_yp86ic.jpg"
+      alt="Phui League"
+      style="
+        max-height: 60px;
+        display: block;
+        margin: 0 auto 8px;
+      "
+    />
+    <p style="margin: 0;">Đặt lại mật khẩu thành công!</p>
+</div>
+
+
+        <!-- Body -->
+        <div style="padding: 25px; color: #333333;">
+            <p>Xin chào <strong>${user.username}</strong>,</p>
+
+            <p>
+                Mật khẩu cho tài khoản
+                <strong>${user.email}</strong>
+                đã được <span style="color:#28a745; font-weight:bold;">đặt lại thành công</span>.
+            </p>
+
+            <div style="
+                background-color: #f0fff4;
+                border-left: 4px solid #28a745;
+                padding: 15px;
+                margin: 20px 0;
+                font-size: 14px;
+            ">
+                🔐 Tài khoản của bạn hiện đã được bảo mật với mật khẩu mới.
+            </div>
+
+            <p>
+                Nếu bạn <strong>không thực hiện</strong> thao tác này, vui lòng:
+            </p>
+
+            <ul style="padding-left: 18px;">
+                <li>Liên hệ ngay bộ phận hỗ trợ</li>
+                <li>Đổi lại mật khẩu càng sớm càng tốt</li>
+            </ul>
+
+            <p style="font-size: 14px; color: #555555;">
+                ⏰ Thời gian thực hiện:
+                <strong>${new Date().toLocaleString("vi-VN")}</strong>
+            </p>
+
+            <p style="margin-top: 30px;">
+                Trân trọng,<br/>
+                <strong>Đội ngũ Admin FLeague.</strong>
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div style="
+            background-color: #f4f6f8;
+            padding: 15px;
+            text-align: center;
+            font-size: 12px;
+            color: #888888;
+        ">
+            © ${new Date().getFullYear()} Phui League. All rights reserved.
+        </div>
+    </div>
+</div>
     `;
     sendMail(email, subject, html);
 
