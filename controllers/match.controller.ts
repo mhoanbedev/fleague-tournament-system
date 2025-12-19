@@ -8,8 +8,9 @@ import {
   validateScheduleGeneration,
 } from "../helpers/scheduleGenerator";
 import { processMatchResult } from "../helpers/updateStats";
-import { resetTeamStats, resetAllTeamsStats } from "../helpers/resetStats";
+import { resetAllTeamsStats } from "../helpers/resetStats";
 import mongoose from "mongoose";
+import { rollbackTeamStats } from "../helpers/teamForm.helper";
 
 // [POST] /match/generate-schedule/:leagueId
 export const generateSchedule: RequestHandler = async (req, res) => {
@@ -516,8 +517,50 @@ export const resetMatchResult: RequestHandler = async (req, res) => {
         message: "Chỉ có thể reset kết quả trận đấu đã hoàn thành!",
       });
     }
-    await resetTeamStats(match.homeTeam.toString());
-    await resetTeamStats(match.awayTeam.toString());
+    const homeScore = match.score.home;
+    const awayScore = match.score.away;
+    if (homeScore > awayScore) {
+    await rollbackTeamStats(
+      match.homeTeam.toString(),
+      homeScore,
+      awayScore,
+      "win"
+    );
+    await rollbackTeamStats(
+      match.awayTeam.toString(),
+      awayScore,
+      homeScore,
+      "loss"
+    );
+  } else if (homeScore < awayScore) {
+    await rollbackTeamStats(
+      match.homeTeam.toString(),
+      homeScore,
+      awayScore,
+      "loss"
+    );
+    await rollbackTeamStats(
+      match.awayTeam.toString(),
+      awayScore,
+      homeScore,
+      "win"
+    );
+  } else {
+    await rollbackTeamStats(
+      match.homeTeam.toString(),
+      homeScore,
+      awayScore,
+      "draw"
+    );
+    await rollbackTeamStats(
+      match.awayTeam.toString(),
+      awayScore,
+      homeScore,
+      "draw"
+    );
+  }
+
+
 
     match.score.home = 0;
     match.score.away = 0;

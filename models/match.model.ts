@@ -29,6 +29,7 @@ export interface Match extends Document {
   highlightVideos: HighlightVideo[];
   photos: string[];
   notes?: string;
+  hasBeenReset: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -143,6 +144,10 @@ const MatchSchema = new Schema<Match>(
       type: String,
       default: null,
       maxlength: [500, "Ghi chú tối đa 500 ký tự"],
+    },
+    hasBeenReset: {
+      type: Boolean,
+      default: false,
     },
   },
   {
