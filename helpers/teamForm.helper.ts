@@ -36,7 +36,7 @@ export const rollbackTeamStats = async (
   teamId: string,
   goalsFor: number,
   goalsAgainst: number,
-  result: "win" | "draw" | "loss"
+  result: "win" | "draw" | "lose"
 ): Promise<void> => {
   const update: any = {
     $inc: {
