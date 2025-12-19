@@ -517,6 +517,12 @@ export const resetMatchResult: RequestHandler = async (req, res) => {
         message: "Chỉ có thể reset kết quả trận đấu đã hoàn thành!",
       });
     }
+    if (match.hasBeenReset) {
+      return res.status(400).json({
+        message: "Kết quả trận đấu đã được reset trước đó!",
+      });
+    }
+      
     const homeScore = match.score.home;
     const awayScore = match.score.away;
     if (homeScore > awayScore) {
@@ -569,7 +575,7 @@ export const resetMatchResult: RequestHandler = async (req, res) => {
     match.videoUrl = null;
     match.highlightVideos = [];
     match.photos = [];
-
+    match.hasBeenReset = true;
     await match.save();
 
     res.status(200).json({
