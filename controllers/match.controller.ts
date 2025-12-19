@@ -196,8 +196,8 @@ export const updateMatchResult: RequestHandler = async (req, res) => {
     }
 
     const league = match.league as any;
-
-    if (league.owner.toString() !== req.userId?.toString()) {
+    const leagueOwner = typeof league === "object" ? league.owner : league;
+    if (leagueOwner.toString() !== req.userId?.toString()) {
       return res.status(403).json({
         message: "Bạn không có quyền cập nhật kết quả trận đấu này!",
       });

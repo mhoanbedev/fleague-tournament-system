@@ -100,9 +100,9 @@ export const processMatchResult = async (
   match.status = "finished";
   match.playedDate = new Date();
   await match.save();
-
-  homeTeam.form = await rebuildTeamForm(homeTeam._id.toString(), match.league.toString());
-  awayTeam.form = await rebuildTeamForm(awayTeam._id.toString(), match.league.toString());
+  const leagueId = typeof match.league === "object" ? match.league._id : match.league;
+  homeTeam.form = await rebuildTeamForm(homeTeam._id.toString(), leagueId.toString());
+  awayTeam.form = await rebuildTeamForm(awayTeam._id.toString(), leagueId.toString());
   await homeTeam.save();
   await awayTeam.save();
 
