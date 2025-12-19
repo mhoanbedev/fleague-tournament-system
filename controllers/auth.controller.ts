@@ -5,8 +5,6 @@ import { generateTokens, verifyRefreshToken } from "../helpers/tokens";
 import * as loginAttempts from "../helpers/loginAttempts";
 import ForgotPassword from "../models/forgot-password.model";
 import { generateRandomNumber, generateRandomString } from "../helpers/generate";
-import { console } from "inspector";
-import { send } from "process";
 import { sendMail } from "../helpers/mail.helper";
 
 // [POST] /user/register
@@ -256,7 +254,6 @@ export const verifyOtp: RequestHandler = async (req, res) => {
 export const resetPassword: RequestHandler = async (req, res) => {
   try {
     const { email, resetToken, newPassword } = req.body;
-
     if (!email || !resetToken || !newPassword) {
       return res.status(400).json({
         message: "Thiếu thông tin bắt buộc!",
@@ -264,7 +261,6 @@ export const resetPassword: RequestHandler = async (req, res) => {
     }
 
     const record = await ForgotPassword.findOne({ email: email, otp: resetToken });
-
     if (!record) {
       return res.status(400).json({
         message: "Reset token không hợp lệ hoặc đã hết hạn!",

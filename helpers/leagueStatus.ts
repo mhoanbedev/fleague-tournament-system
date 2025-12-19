@@ -1,22 +1,26 @@
+const toUTCDate = (d: Date) => 
+  new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+
+
 export const determineLeagueStatus = (
   startDate?: Date | null,
   endDate?: Date | null
 ): "upcoming" | "ongoing" | "completed" => {
-  const now = new Date();
-  now.setHours(0, 0, 0, 0); 
-
+  // const now = new Date();
+  // now.setHours(0, 0, 0, 0); 
+  const now = toUTCDate(new Date());
   if (!startDate && !endDate) {
     return "upcoming";
   }
   if (startDate) {
-    const start = new Date(startDate);
-    start.setHours(0, 0, 0, 0);
+    const start = toUTCDate(new Date(startDate));
+    // start.setHours(0, 0, 0, 0);
     if (now < start) {
       return "upcoming";
     }
     if (endDate) {
-      const end = new Date(endDate);
-      end.setHours(0, 0, 0, 0);
+      const end = toUTCDate(new Date(endDate));
+      // end.setHours(0, 0, 0, 0);
       if (now > end) {
         return "completed";
       }
@@ -30,8 +34,8 @@ export const determineLeagueStatus = (
     }
   }
   if (endDate && !startDate) {
-    const end = new Date(endDate);
-    end.setHours(0, 0, 0, 0);
+    const end = toUTCDate(new Date(endDate));
+    // end.setHours(0, 0, 0, 0);
 
     if (now > end) {
       return "completed";
@@ -51,12 +55,12 @@ export const canUpdateLeague = (
     return false;
   }
   if (currentStatus === "ongoing") {
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
+    const now = toUTCDate(new Date());
+    // now.setHours(0, 0, 0, 0);
 
     if (startDate) {
-      const start = new Date(startDate);
-      start.setHours(0, 0, 0, 0);
+      const start = toUTCDate(new Date(startDate));
+      // start.setHours(0, 0, 0, 0);
       if (start < now) {
         return false;
       }
