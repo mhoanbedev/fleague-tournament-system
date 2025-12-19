@@ -180,9 +180,14 @@ export const getMatchDetail: RequestHandler = async (req, res) => {
 // [PATCH] /match/:id/result
 export const updateMatchResult: RequestHandler = async (req, res) => {
   try {
+    console.log("PATCH /match/:id/result body:", req.body);
     const { id } = req.params;
     const { homeScore, awayScore } = req.body;
-
+    const homeScoreNum = Number(homeScore);
+    const awayScoreNum = Number(awayScore);
+    if (isNaN(homeScoreNum) || isNaN(awayScoreNum)) {
+      return res.status(400).json({ message: "Điểm số không hợp lệ" });
+    }
     const match = await Match.findById(id).populate("league");
     if (!match) {
       return res.status(404).json({
@@ -204,7 +209,7 @@ export const updateMatchResult: RequestHandler = async (req, res) => {
       });
     }
 
-    await processMatchResult(match, homeScore, awayScore);
+    await processMatchResult(match, homeScoreNum, awayScoreNum);
 
     const updatedMatch = await Match.findById(id)
       .populate("homeTeam", "name shortName logo stats")
@@ -215,9 +220,10 @@ export const updateMatchResult: RequestHandler = async (req, res) => {
       match: updatedMatch,
     });
   } catch (error) {
-    console.error(error);
+    console.error("updateMatchResult error:", error);
     res.status(500).json({
       message: "Server error!",
+      error: error instanceof Error ? error.message : error,
     });
   }
 };
