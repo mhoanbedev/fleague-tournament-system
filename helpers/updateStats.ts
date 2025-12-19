@@ -1,6 +1,7 @@
 import { Team } from "../models/team.model";
 import { Match } from "../models/match.model";
-
+import { rebuildTeamForm } from "./teamForm.helper";
+import TeamModel from "../models/team.model";
 export const updateTeamStats = (
   team: Team,
   goalsFor: number,
@@ -16,19 +17,19 @@ export const updateTeamStats = (
   if (result === "win") {
     team.stats.won += 1;
     team.stats.points += 3;
-    team.form.unshift("W");
+    // team.form.unshift("W");
   } else if (result === "draw") {
     team.stats.drawn += 1;
     team.stats.points += 1;
-    team.form.unshift("D");
+    // team.form.unshift("D");
   } else if (result === "lose") {
     team.stats.lost += 1;
-    team.form.unshift("L");
+    // team.form.unshift("L");
   }
 
-  if (team.form.length > 5) {
-    team.form = team.form.slice(0, 5);
-  }
+  // if (team.form.length > 5) {
+  //   team.form = team.form.slice(0, 5);
+  // }
 };
 
 export const revertTeamStats = (
@@ -52,9 +53,9 @@ export const revertTeamStats = (
     team.stats.lost = Math.max(0, team.stats.lost - 1);
   }
 
-  if (team.form.length > 0) {
-    team.form.shift();
-  }
+  // if (team.form.length > 0) {
+  //   team.form.shift();
+  // }
 };
 
 export const determineMatchResult = (
@@ -78,7 +79,7 @@ export const processMatchResult = async (
   homeScore: number,
   awayScore: number
 ): Promise<void> => {
-  const TeamModel = require("../models/team.model").default;
+  // const TeamModel = require("../models/team.model").default;
   const homeTeam = await TeamModel.findById(match.homeTeam);
   const awayTeam = await TeamModel.findById(match.awayTeam);
 
@@ -94,13 +95,15 @@ export const processMatchResult = async (
   const result = determineMatchResult(homeScore, awayScore);
   updateTeamStats(homeTeam, homeScore, awayScore, result.homeResult);
   updateTeamStats(awayTeam, awayScore, homeScore, result.awayResult);
-
-  await homeTeam.save();
-  await awayTeam.save();
-
   match.score.home = homeScore;
   match.score.away = awayScore;
   match.status = "finished";
   match.playedDate = new Date();
   await match.save();
+
+  homeTeam.form = await rebuildTeamForm(homeTeam._id.toString(), match.league.toString());
+  awayTeam.form = await rebuildTeamForm(awayTeam._id.toString(), match.league.toString());
+  await homeTeam.save();
+  await awayTeam.save();
+
 };
