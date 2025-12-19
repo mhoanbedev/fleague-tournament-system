@@ -10,7 +10,7 @@ import {
 import { processMatchResult } from "../helpers/updateStats";
 import { resetAllTeamsStats } from "../helpers/resetStats";
 import mongoose from "mongoose";
-import { rollbackTeamStats } from "../helpers/teamForm.helper";
+import { rebuildTeamForm, rollbackTeamStats } from "../helpers/teamForm.helper";
 
 // [POST] /match/generate-schedule/:leagueId
 export const generateSchedule: RequestHandler = async (req, res) => {
@@ -542,14 +542,14 @@ export const resetMatchResult: RequestHandler = async (req, res) => {
       match.awayTeam.toString(),
       awayScore,
       homeScore,
-      "loss"
+      "lose"
     );
   } else if (homeScore < awayScore) {
     await rollbackTeamStats(
       match.homeTeam.toString(),
       homeScore,
       awayScore,
-      "loss"
+      "lose"
     );
     await rollbackTeamStats(
       match.awayTeam.toString(),
@@ -572,6 +572,17 @@ export const resetMatchResult: RequestHandler = async (req, res) => {
     );
   }
 
+
+const leagueId = typeof match.league === "object" ? match.league._id : match.league;
+const homeTeam = await Team.findById(match.homeTeam);
+const awayTeam = await Team.findById(match.awayTeam);
+
+if (homeTeam && awayTeam) {
+  homeTeam.form = await rebuildTeamForm(homeTeam._id.toString(), leagueId.toString());
+  awayTeam.form = await rebuildTeamForm(awayTeam._id.toString(), leagueId.toString());
+  await homeTeam.save();
+  await awayTeam.save();
+}
 
 
     match.score.home = 0;
